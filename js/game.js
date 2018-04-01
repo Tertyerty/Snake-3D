@@ -116,28 +116,6 @@ class SnakeGame{
         this.camera.updateProjectionMatrix();
     }
 
-
-    _windowSizeChanged(renderer, camera) {
-        if (this.viewport.width != window.innerWidth || this.viewport.height != window.innerHeight) {
-            this.viewport.width = window.innerWidth;
-            this.viewport.height = window.innerHeight;
-            renderer.setSize(this.viewport.width, this.viewport.height);
-            this._updateCamera(camera)
-        }
-        return true;
-    }
-
-    _updateCamera(camera) {
-        camera.aspect = this.viewport.aspect();
-        if (this.viewport.mode == 'ORTHO') {
-            camera.left = this.viewport.ortho.left();
-            camera.right = this.viewport.ortho.right();
-            camera.top = this.viewport.ortho.top();
-            camera.bottom = this.viewport.ortho.bottom();
-        }
-        camera.updateProjectionMatrix();
-    }
-
     _animationLoop(callback) {
         let clock = new THREE.Clock(true);
         let elapsedTime = 0;
