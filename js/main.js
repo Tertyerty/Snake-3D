@@ -1,32 +1,30 @@
 var renderer = 0;
 var scene = 0;
 var camera = 0;
-var keys = [];
-const VIEWPORT = { 
-    width: window.innerWidth,
-    height: window.innerHeight,
-    aspect: function(){
-        return this.width / this.height;
-    },
-    ortho:{
-        max: 20,
-        left: () => { return -0.5 * VIEWPORT.aspect() * VIEWPORT.ortho.max },
-        right: () => { return 0.5 * VIEWPORT.aspect() * VIEWPORT.ortho.max },
-        top: () => { return 0.5 * VIEWPORT.ortho.max },
-        bottom: () => { return -0.5 * VIEWPORT.ortho.max }
-    },
-    near: 0.1,
-    far: 2000,
-    mode: 'ORTHO'
-};
+var keyboard;
+
+
+var GRID = {}
+
 
 let snake = 0;
 
+let food = 0;
+
+let snakeGame = 0;
 function start(){
-    /*
-    VIEWPORT.width = window.innerWidth;
-    VIEWPORT.height = window.innerHeight;
-    */
+    snakeGame = new SnakeGame();
+    $('#canvas-section').append(snakeGame.renderer.domElement);
+    snakeGame.run();
+}
+
+function updateAndRender(time){
+    //snakeGame.input();
+    //snakeGame.
+}
+
+/*
+function start(){
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(VIEWPORT.width, VIEWPORT.height);
     $('#canvas-section').append(renderer.domElement);
@@ -39,8 +37,7 @@ function start(){
     else if(VIEWPORT.mode == 'ORTHO')
         camera = new THREE.OrthographicCamera(VIEWPORT.ortho.left(), VIEWPORT.ortho.right(), VIEWPORT.ortho.top(), VIEWPORT.ortho.bottom(), VIEWPORT.near, VIEWPORT.far);
 
-    camera.position.set(10, 10, 10);
-    camera.lookAt(0, 0, 0);
+    
 
     //camera.position.set(0, 0, 100);
 
@@ -52,52 +49,77 @@ function start(){
     yDirLight.position.set(0, 1, 0)
     zDirLight.position.set(0, 0, 1)
 
-    let boxGeo = new THREE.BoxGeometry(1, 1, 1);
-    let boxMaterial = new THREE.MeshLambertMaterial({
+    let sphereGeo = new THREE.SphereGeometry(0.5, 4, 2);
+    let sphereMaterial = new THREE.MeshPhongMaterial ({
         color: new THREE.Color(0xFFFFFF)
     });
     
     window.addEventListener("resize", () => { windowSizeChanged(renderer, camera) });
 
-    snake = new Snake( {
-        position: new THREE.Vector3(0, 0.5, 0),
-        speed: 0.5,
-    }, scene );
+    GRID = new Grid(1, 31);
 
-    let gridHelper = new THREE.GridHelper(21, 21);
+    food = new THREE.Mesh(sphereGeo, sphereMaterial);
+    food.position.copy( GRID.randomPosition() );
+    food.position.y = 0.5;
+    
+    snake = new Snake(scene, GRID, {
+        position: GRID.randomPosition(),
+        speed: 0.1,
+    } );
+    snake.position.y = 0.5;
+
+    var axesHelper = new THREE.AxesHelper(5);
+    
+    camera.position.copy(GRID.gridHelper.position);
+    camera.position.add( new THREE.Vector3(20, 20, 20));
+    camera.lookAt(GRID.gridHelper.position);
 
     scene.add(xDirLight);
     scene.add(yDirLight);
     scene.add(zDirLight);
     scene.add(ambientLight);
-    scene.add(gridHelper);
+    
+    scene.add(food);
+
+    scene.add(axesHelper);
+    scene.add(GRID.gridHelper);
+
+    keyboard = new Keyboard();
 
     animationLoop(updateAndRender);
 }
 
+function updateAndRender(time){
+    snake.input(keyboard);
 
-function updateAndRender(dt){
-    snake.update(dt);
+    food.position.y = Math.sin(time.elapsed * 5) * 0.2 + 0.5;
+    food.rotation.y += time.deltaTime;
+    let foodInGrid = GRID.worldToGrid(food.position);
+    //console.log(`Grid { x: ${foodInGrid.x}, y: ${foodInGrid.y}, z: ${foodInGrid.z}}, World {x: ${food.position.x}, y: ${food.position.y}, z: ${food.position.z}}`);
+    if (snake.eat(foodInGrid) ){
+        food.position.copy(GRID.randomPosition());
+        food.position.y = 0.5;
+    }
+    snake.update(time.deltaTime);
+
     /*VIEWPORT.ortho.max += dt * 3;
-    updateCamera(camera);*/
+    updateCamera(camera);
     renderer.render(scene, camera);
 }
 
-function onKeyDown(event){
-    
-}
+*/
 
-function windowSizeChanged(renderer, camera){
+function windowSizeChanged(renderer, camera, VIEWPORT){
     if (VIEWPORT.width != window.innerWidth || VIEWPORT.height != window.innerHeight) {
         VIEWPORT.width = window.innerWidth;
         VIEWPORT.height = window.innerHeight;
         renderer.setSize(VIEWPORT.width, VIEWPORT.height);
-        updateCamera()
+        updateCamera(camera, VIEWPORT)
     }
     return true;
 }
 
-function updateCamera(camera) {
+function updateCamera(camera, VIEWPORT) {
     camera.aspect = VIEWPORT.aspect();
     if (VIEWPORT.mode == 'ORTHO') {
         camera.left = VIEWPORT.ortho.left();
@@ -108,10 +130,18 @@ function updateCamera(camera) {
     camera.updateProjectionMatrix();
 }
 
+
 function animationLoop(callback){
     let clock = new THREE.Clock(true);
+    let elapsedTime = 0;
     function _animationLoop() {
-        callback(clock.getDelta());
+        let dt = clock.getDelta();
+        elapsedTime += dt;    
+        let time = {
+            elapsed: elapsedTime,
+            deltaTime: dt
+        }
+        callback( time );
         requestAnimationFrame(_animationLoop);
     }
     requestAnimationFrame(_animationLoop);
