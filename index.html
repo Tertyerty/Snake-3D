@@ -11,20 +11,29 @@
             padding: 0px;
             overflow: hidden;
         }
+
+        #canvas-section{
+           /*background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center; 
+            background-image: url(http://www.52dazhew.com/data/out/237/587559469-wallpaper-pixel-art.png)*/
+            background: radial-gradient(#4876a8, #080d12);
+        }
     </style>
 </head>
 <body>
+
     <div id="canvas-section"></div>
+    <img src="" alt="" srcset="">
+
     <script src="js/libs/jquery.js"></script>
     <script src="js/libs/three.js"></script>
     <script src="js/keyboard.js"></script>    
+    <script src="js/inputMapping.js"></script>
     <script src="js/grid.js"></script>
     <script src="js/viewport.js"></script>
     <script src="js/snake.js"></script>
-    <script src="js/game.js"></script>
+    <script src="js/snakeGame.js"></script>
     <script src="js/main.js"></script>
-    <script src="">
-        javascript: (function () { var script = document.createElement('script'); script.onload = function () { var stats = new Stats(); document.body.appendChild(stats.dom); requestAnimationFrame(function loop() { stats.update(); requestAnimationFrame(loop) }); }; script.src = '//rawgit.com/mrdoob/stats.js/master/build/stats.min.js'; document.head.appendChild(script); })()
-    </script>
 </body>
 </html>

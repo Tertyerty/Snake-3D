@@ -1,6 +1,7 @@
 class Grid{
     constructor(cellSize, cellCount){
         this.cellSize = cellSize;
+        this.half_cellSize = this.cellSize * 0.5;
         this.cellCount = cellCount;
         this.gridSize = (this.cellSize * this.cellCount);
         this.position = new THREE.Vector3(this.gridSize * 0.5, 0, this.gridSize * 0.5);
@@ -10,8 +11,9 @@ class Grid{
 
     randomPosition() {
         let randX = Math.floor(Math.random() * this.cellCount);
+        let y = this.half_cellSize;
         let randZ = Math.floor(Math.random() * this.cellCount);
-        let result = new THREE.Vector3(randX, this.cellSize * 0.5, randZ);
+        let result = new THREE.Vector3(randX, y, randZ);
         result.multiplyScalar(this.cellSize);
         result.add(new THREE.Vector3(this.cellSize * 0.5, 0, this.cellSize * 0.5));
         return result;
@@ -21,7 +23,7 @@ class Grid{
         let result = position.clone();
         let gridSize = this.gridSize;
         result.x = Math.floor(result.x / this.cellSize);
-        result.y = 0;
+        result.y = Math.floor(result.y / this.cellSize);
         result.z = Math.floor(result.z / this.cellSize);
         return result;
     }

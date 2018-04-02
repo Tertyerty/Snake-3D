@@ -2,65 +2,72 @@ class Snake{
 
     constructor(scene, grid, args){
         if(!args) args = {};
+        
         this.geometry = args['geometry'] || new THREE.BoxGeometry(1,1,1);
         this.material = args['material'] || new THREE.MeshLambertMaterial({color: new THREE.Color(0xffffff)});
         this.mesh = args['mesh'] || new THREE.Mesh(this.geometry, this.material);
         let pos = args['position'] || new THREE.Vector3(0, 0, 0);
         this.mesh.position.copy(pos);
-
-        this.direction = args['direction'] || "DOWN";
+        this.grid = grid;
+        this.scene = scene;
+        this.scene.add(this.mesh);
+        
+        this.history = [];
+        if(args['length']){
+            for(let i = 0; i < args['length']; i++)
+                this.grow();
+        }
+        
         this.velocity = args['velocity'] || new THREE.Vector3(0, 0, 1);
         this.position = this.mesh.position;
         
-        this.history = [];
-        //this.history.push(this.pos);
-        this.scene = scene;
-        this.setDirection(this.direction);
-        this.scene.add(this.mesh);
-        this.clock = new THREE.Clock(true);
+        this.elapsed = 0;
         this.tick = args['tick'] || 1;
-        this.newDirection = 'DOWN';
 
-        this.grid = grid;
+        this.playerId = args['playerId'] || 0;
+        this.isAlive = true;
+        this.jumping = false;
+        this.onAirCount = 0;
     }
 
-    input(keyboard){
-        /*
-        if (keyboard.pressed('W')) this.newDirection = 'UP';
-        if (keyboard.pressed('A')) this.newDirection = 'LEFT';
-        if (keyboard.pressed('S')) this.newDirection = 'DOWN';
-        if (keyboard.pressed('D')) this.newDirection = 'RIGHT';
-        */
-        
-        if (keyboard.pressed('A')){ 
+    input(input){
+
+        if (input.pressed('Left')) {
             this.rotateDir(90);
-            keyboard.pressed('A', false);
+            input.pressed('Left', false);
         }
-        if (keyboard.pressed('D')){ 
+        
+        if (input.pressed('Right')) {
             this.rotateDir(-90);
-            keyboard.pressed('D', false);
+            input.pressed('Right', false);
         }
-        
-        
-        if (keyboard.pressed('shift+R')) {
+
+        if (input.pressed('Jump')) {
+            this.jumping = true;
+            //input.pressed('Jump', false);
+        }else{
+            this.jumping = false;
+        }
+
+        if (input.pressed('Grow')) {
             this.grow();
-            //keyboard.pressed('shift+R', false);
         }
     }
 
-    update(dt){
-        if(this.clock.getElapsedTime() >= this.tick){
+    update(time){
+        this.elapsed += time.deltaTime;
+        if(this.elapsed >= this.tick){
+            this.elapsed = 0;
             let scaleRange = {
                 max: 0.9,
                 min: 0.3
             }
             let scaleStep = scaleRange.max / this.history.length;
-            //scaleStep = scaleStep < scaleRange.min ? scaleRange.min : scaleStep;
             let scale = scaleStep;
             for (let i = 0; i < this.history.length - 1; i++) {
-                //this.history[i].position.set()
                 let next = this.history[i + 1];
                 this.history[i].position.copy(next.position);
+                this.history[i].isNew = false;
                 if (scale >= scaleRange.min)
                     this.history[i].scale.set(scale, scale, scale);
                 else
@@ -73,18 +80,24 @@ class Snake{
                 first.scale.set(scaleRange.max, scaleRange.max, scaleRange.max);
             }
 
-            this.setDirection(this.newDirection);
             let vel = this.velocity.clone();
             vel.multiplyScalar(this.grid.cellSize);
             this.position.add(vel);
-            this.clock.start();
+            if (this.jumping && this.onAirCount < 4){
+                this.position.y = this.grid.half_cellSize * 3;
+                this.onAirCount++;
+            }else{
+                this.onAirCount = 0;
+                this.position.y = this.grid.half_cellSize;
+            }
             
             let gridSize = this.grid.gridSize;
             this.position.x = (this.position.x + gridSize) % gridSize;
             this.position.z = (this.position.z + gridSize) % gridSize;
 
-            if (this.intersects(this))
-                this._deleteHistory();
+            /*if (this.intersects(this))
+                this.onIntersectItself();
+                */
         }
     }
 
@@ -99,11 +112,12 @@ class Snake{
 
     grow(){
         let body = this.mesh.clone();
+        body.isNew = true;
         this.scene.add(body);
         this.history.push(body);
     }
 
-    _deleteHistory(){
+    deleteHistory(){
         for(let body of this.history){
             this.scene.remove(body);
         }
@@ -116,7 +130,7 @@ class Snake{
         for(let bodyPart of snake.history){
             let bodyInGrid = this.grid.worldToGrid(bodyPart.position);
             let distance = gridPosition.distanceTo(bodyInGrid);
-            if(distance == 0) 
+            if(distance == 0 && !bodyPart.isNew )
                 result = true;
         }
         if(snake != this){
@@ -128,47 +142,19 @@ class Snake{
         return result;
     }
 
-    setDirection(direction){
-        direction = direction.toUpperCase();
-        if(this.direction != direction){
-            let directionChanged = false;            
-            switch(direction){
-                case 'UP':
-                    if( this.direction != 'DOWN') {
-                        this.velocity.set(0, 0, -1);
-                        directionChanged = true;
-                    }
-                    break;
-                case 'RIGHT':
-                    if (this.direction != 'LEFT') {
-                        this.velocity.set(1, 0, 0);
-                        directionChanged = true;                        
-                    }
-                    
-                    break;
-                case 'DOWN':
-                    if (this.direction != 'UP') {
-                        this.velocity.set(0, 0, 1);
-                        directionChanged = true;                        
-                    }
-                    
-                    break;
-                case 'LEFT':
-                    if (this.direction != 'RIGHT') {
-                        this.velocity.set(-1, 0, 0);
-                        directionChanged = true;
-                    }
-                    break;
-            }
-            if(directionChanged){
-                this.direction = direction;
-            }
-        }
-    }
-
     rotateDir(angle){
         let axis = new THREE.Vector3(0, 1, 0);
         this.velocity.applyAxisAngle(axis, THREE.Math.degToRad(angle));
+    }
+
+    get alive(){
+        return this.isAlive;
+    }
+
+    set alive(value){
+        this.isAlive = value;
+        if(!this.isAlive)
+            this.deleteHistory();
     }
 
 }
