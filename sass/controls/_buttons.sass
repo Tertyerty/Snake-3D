@@ -1,0 +1,93 @@
+
+
+//Image-atlases
+$atlas-button-orange: ( '../img/atlas/button-orange-left.png' 1 3, '../img/atlas/button-orange-center.png' 1 3, '../img/atlas/button-orange-right.png' 1 3)
+
+$atlas-button-green: ( '../img/atlas/button-green-left.png' 1 3, '../img/atlas/button-green-center.png' 1 3, '../img/atlas/button-green-right.png' 1 3)
+
+$atlas-small-button-blue: '../img/atlas/button-blue-small.png' 1 3
+
+// Mixins
+=image-atlas($image, $rows, $cols)
+    background-image: url('#{$image}')
+    background-repeat: no-repeat
+    background-size: $rows * 100% $cols * 100%
+
+=button-size-ratio($width)
+    width: $width
+    height: $width / 3.33333
+
+=wide-button($atlas)
+    display: grid
+    height: 100%
+    grid-template-columns: 23% 70% 7%
+    .left
+        display: grid
+        +image-atlas(nth($atlas, 1)...)
+        grid-template-rows: 1fr 0.26fr
+        .icon
+            margin: auto
+            width: 40%
+            height: 50%
+            
+    .center
+        overflow: hidden
+        +image-atlas(nth($atlas, 2)...)
+        display: grid
+        justify-content: center
+        align-content: center
+        grid-template-rows: 1fr 0.26fr
+        span
+            color: $light
+            font-family: '8BITWO'
+            padding: $space-inset-squish-l
+            margin: auto
+    
+    .right
+        +image-atlas(nth($atlas, 3)...)
+
+    &:hover
+        .left, .center, .right
+            background-position: 0 center
+    
+    &:active
+        .left, .center, .right
+            background-position: 0 bottom
+
+
+=small-button($atlas)
+    display: inline-block
+    width: 50px
+    height: 50px
+    +image-atlas($atlas...)
+    &:hover
+        background-position: 0 center
+    
+    &:active
+        background-position: 0 bottom
+
+    .icon
+        top: 18%
+        position: relative
+        margin: auto
+        width: 50%
+        height: 50%
+
+// Styles    
+%no-decoration
+    text-decoration: none
+
+.button-container
+    display: inline-block
+    //+button-size-ratio(250px)
+
+.wide-button-orange
+    @extend %no-decoration
+    +wide-button($atlas-button-orange)
+
+.wide-button-green
+    @extend %no-decoration
+    +wide-button($atlas-button-green)
+
+.small-button-blue
+    +small-button($atlas-small-button-blue)

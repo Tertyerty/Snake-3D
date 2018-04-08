@@ -1,0 +1,55 @@
+// Sizes:
+$space-qx:   4px
+$space-hx:   8px
+$space-x:    16px
+$space-2x:   32px
+$space-3x:   64px
+
+$space-xs:      $space-qx
+$space-s:       $space-hx
+$space-m:       $space-x
+$space-l:       $space-2x
+$space-xl:      $space-3x
+
+$space-inset-xs:            $space-xs $space-xs $space-xs $space-xs
+$space-inset-s:             $space-s $space-s $space-s $space-s
+$space-inset-m:             $space-m $space-m $space-m $space-m
+$space-inset-l:             $space-l $space-l $space-l $space-l
+$space-inset-xl:            $space-xl $space-xl $space-xl $space-xl
+$space-inset-default:       $space-inset-m
+
+$space-inset-squish-s:             $space-xs $space-s $space-xs $space-s
+$space-inset-squish-m:             $space-s $space-m $space-s $space-m
+$space-inset-squish-l:             $space-m $space-l $space-m $space-l
+$space-inset-squish-default:       $space-inset-squish-m
+
+$space-inset-stretch-s:             $space-m $space-s $space-m $space-s
+$space-inset-stretch-m:             $space-l $space-m $space-l $space-m
+$space-inset-stretch-default:       $space-inset-stretch-m
+
+$space-stack-xs:    0 0 $space-xs 0
+$space-stack-s:     0 0 $space-s  0
+$space-stack-m:     0 0 $space-m  0
+$space-stack-l:     0 0 $space-l  0
+$space-stack-xl:    0 0 $space-xl 0
+
+$space-inline-xs:    0 $space-xs 0 0
+$space-inline-s:     0 $space-s  0 0
+$space-inline-m:     0 $space-m  0 0
+$space-inline-l:     0 $space-l  0 0
+$space-inline-xl:    0 $space-xl 0 0
+
+=inset($size)
+    padding: $size $size $size $size
+
+=inset-squish($NS, $EW)
+    padding: $NS $EW
+
+=inset-strech($sides)
+    padding: 150% $sides
+
+=stack($size)
+    margin-bottom: $size
+
+=inline($size)
+    margin-right: $size

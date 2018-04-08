@@ -1,0 +1,81 @@
+
+$panel-top-image: (url('../img/components/panel-top-left.png'), url('../img/components/panel-top-center.png'), url('../img/components/panel-top-right.png'))
+
+$panel-bottom-image: (url('../img/components/panel-bottom-left.png'), url('../img/components/panel-bottom-center.png'), url('../img/components/panel-bottom-right.png'))
+
+$ribbon-blue: (url('../img/components/ribbon-blue-left.png'), url('../img/components/ribbon-blue-center.png'), url('../img/components/ribbon-blue-right.png'))
+
+
+=full-bg-image($url)
+    background-image: $url
+    background-size: 100% 100%
+
+=three-part-image($multipart-image, $template-columns)
+    display: grid
+    grid-template-columns: $template-columns
+    div:nth-child(1)
+        @extend %full-size
+        +full-bg-image(nth($multipart-image, 1))
+    div:nth-child(2)
+        @extend %full-size
+        +full-bg-image(nth($multipart-image, 2))
+    div:nth-child(3)
+        @extend %full-size
+        +full-bg-image(nth($multipart-image, 3))
+
+%full-size
+    width: 100%
+    height: 100%
+
+
+    
+.panel-ribbon
+    display: grid
+    //width: 100%
+    
+    grid-template-columns: 10% 80% 10%
+    grid-template-rows: 0.5fr 2fr 4fr 0.5fr
+
+    grid-template-areas: '. top .' 'left center right' '. content .' '. footer .'
+
+    justify-content: center
+
+    &::before
+        content: ''
+        grid-area: left
+        @extend %full-size
+        +full-bg-image(nth($ribbon-blue, 1))
+
+    &::after
+        content: ''
+        grid-area: right
+        @extend %full-size
+        +full-bg-image(nth($ribbon-blue, 3))
+
+    .top-border
+        grid-area: top
+        +three-part-image($panel-top-image, 1fr 6fr 1fr)
+    
+    .header
+        background-image: nth($ribbon-blue, 2)
+        background-size: 100% 100%
+        grid-area: center
+        vertical-align: middle
+        text-align: center
+        color: $light
+        h1
+            //display: inline-block
+            font-family: '8BITWO'
+            font-size: 1.3em
+            //margin: auto
+    
+    .content
+        padding: $space-inset-squish-m
+        grid-area: content
+        text-align: center
+        background-color: $color-panel-content
+
+    .footer
+        grid-area: footer
+        +three-part-image($panel-bottom-image, 1fr 6fr 1fr)
+

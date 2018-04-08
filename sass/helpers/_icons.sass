@@ -1,0 +1,26 @@
+//Icons
+$icon-play-url: url('../img/icons/icon-play.png') 
+$icon-multiplayer-url: url('../img/icons/icon-multiplayer.png')
+$icon-highscores-url: url('../img/icons/icon-highscores.png')
+$icon-settings-url: url('../img/icons/icon-settings.png')
+
+%icon-base
+    width: inherit
+    height: inherit
+    background-size: 100% 100%
+
+.icon-play
+    @extend %icon-base
+    background-image: $icon-play-url
+    
+.icon-multiplayer
+    @extend %icon-base
+    background-image: $icon-multiplayer-url
+
+.icon-highscores
+    @extend %icon-base
+    background-image: $icon-highscores-url
+
+.icon-settings
+    @extend %icon-base
+    background-image: $icon-settings-url
