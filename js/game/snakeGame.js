@@ -1,5 +1,6 @@
 class SnakeGame{
     constructor(players){
+
         this.viewport = new Viewport(window.innerWidth, window.innerHeight, 'ORTHO', 40);
 
         this.renderer = new THREE.WebGLRenderer( {alpha: true} );
@@ -16,7 +17,10 @@ class SnakeGame{
             this.camera = new THREE.OrthographicCamera(this.viewport.ortho.left(), this.viewport.ortho.right(), this.viewport.ortho.top(), this.viewport.ortho.bottom(), this.viewport.near, this.viewport.far);
         }
 
-        window.addEventListener("resize", () => { this.windowSizeChanged(this.renderer, this.camera) });
+        this.viewport.onViewportResized((viewport) => {
+            this.renderer.setSize(viewport.width, viewport.height);
+            this.updateCamera()
+        });
 
             
         this.lights = [];
@@ -121,21 +125,17 @@ class SnakeGame{
     }
 
 
+
     input(){
         for (let player of this.players) {
             let controller = this.playerControllers[player.playerId] || this.defaultController;
             player.input(controller);
         }
         if(this.keyboard.pressed('esc')){
-            this.paused = !this.paused;
-            if(this.paused){
-                this.clock.stop();
-                this.onGamePaused();
-            }
-            else {
-                this.clock.start();
-                this.onGameUnpaused();
-            }
+            if(!this.paused)
+                this.pause();
+            else
+                this.unpause();
             this.keyboard.pressed('esc', false);
         }
     }
@@ -168,15 +168,6 @@ class SnakeGame{
 
     render(){
         this.renderer.render(this.scene, this.camera);
-    }
-
-    windowSizeChanged() {
-        if (this.viewport.width != window.innerWidth || this.viewport.height != window.innerHeight) {
-            this.viewport.width = window.innerWidth;
-            this.viewport.height = window.innerHeight;
-            this.renderer.setSize(this.viewport.width, this.viewport.height);
-            this.updateCamera()
-        }
     }
 
     updateCamera() {
@@ -216,8 +207,21 @@ class SnakeGame{
         }
     }
 
+    pause(){
+        if(!this.paused){
+            this.paused = !this.paused;
+            this.clock.stop();
+            this.onGamePaused();
+        }
+    }
 
-
+    unpause(){
+        if(this.paused){
+            this.paused = !this.paused;
+            this.clock.start();
+            this.onGameUnpaused();
+        }
+    }
     _animationLoop(callback) {
         this.clock.start();
         let elapsedTime = 0;

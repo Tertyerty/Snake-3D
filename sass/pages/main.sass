@@ -15,12 +15,35 @@ body
     margin: 0px
     padding: 0px
     height: 100vh
-    
 
-.wrapper
+
+/* Let's get this party started */
+::-webkit-scrollbar 
+    width: 8px
+
+ 
+/* Track */
+::-webkit-scrollbar-track 
+    //-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3)
+    background: rgba(0,0,0,0.3)
+    -webkit-border-radius: 10px
+    border-radius: 2px
+
+ 
+/* Handle */
+::-webkit-scrollbar-thumb 
+    -webkit-border-radius: 10px
+    border-radius: 2px
+    background: rgba(0,0,0,0.4)
+    //-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5)
+
+::-webkit-scrollbar-thumb:window-inactive 
+	background: rgba(0,0,0,0.2)
+
+.main-wrapper
     display: grid
     height: 100%
-    grid-template-columns: 2fr 2fr
+    grid-template-columns: 50% 50%
     grid-template-rows: 1fr
     justify-content: center
     align-content: center
@@ -67,11 +90,59 @@ body
     top: $space-m
     left: $space-m
 
+#gameContainer
+    grid-column: 1 / 2
+    grid-row: 1 / 2
 
-.setting-container
-    padding: $space-inset-xs
-    line-height: 0.5em
-    >span
-        vertical-align: middle
-    >div
-        vertical-align: middle
+#modalHighscores
+    .modal-body
+        font-family: 'SMB'
+        text-align: center
+        h1
+            font-size: 1em
+        ul#player-list
+            list-style-type: none
+            padding: 0
+
+
+settings
+    //padding: $space-inset-m
+    display: block
+    margin: $space-stack-l
+    font-size: 0.5em
+    >h1
+        font-size: 2.5em
+
+    &.controls
+        width: 100%
+        >.wrapper
+            font-family: 'SMB'
+            display: grid
+            width: 100%
+            grid-auto-flow: column
+
+            @media (max-width: 892px)
+                grid-auto-flow: row
+                grid-template-columns: 1fr 1fr
+                grid-auto-rows: 100px
+            
+            .player-controls
+                display: inline-block
+                justify-self: center
+
+                ul
+                    list-style-type: none
+                    padding: $space-xs
+                    
+                        
+    &.toggles
+        >.wrapper
+            font-family: 'SMB'
+            font-size: 1.2em
+            display: grid
+            grid-template-columns: 1fr 3fr
+            max-width: 100%
+            .toggle-control
+                justify-self: left
+                padding-left: $space-s
+

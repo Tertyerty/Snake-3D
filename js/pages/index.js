@@ -2,10 +2,10 @@ function start(){
     let modals = [];
     let settingsModal = $('#modalSettings');
     let highscoresModal = $('#modalHighscores');
-    let multiplayerModal = $('#modalMultiplayer');
+    //let multiplayerModal = $('#modalMultiplayer');
     modals.push(settingsModal);
     modals.push(highscoresModal);
-    modals.push(multiplayerModal);
+    //modals.push(multiplayerModal);
 
     $('.toggle-control').click((e) => {
         let self = $(e.target);
@@ -23,11 +23,12 @@ function start(){
     })
 
     $('#btnPlay').click(() => {
-        console.log('Start game')
+        window.location.href = 'game.html?players=1'
     })
 
     $('#btnMultiplayer').click(() => {
-        showModal(multiplayerModal);
+        window.location.href = 'game.html?players=2'
+        //showModal(multiplayerModal);
     })
 
     $('#btnHighscores').click(() => {

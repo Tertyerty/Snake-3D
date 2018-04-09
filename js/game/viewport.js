@@ -16,9 +16,28 @@ class Viewport{
         this.near = 0.1;
         this.far = 1000;
         this.mode = mode;
+        this.onViewportResizedCallback = (viewport) => {};
+        window.addEventListener("resize", () => { this._viewportSizeChanged() });
     }
 
     aspect(){
         return this.width / this.height;
+    }
+
+    onViewportResized(callback){
+        if(callback){
+            this.onViewportResizedCallback = callback
+        }else{
+            this.onViewportResizedCallback(this);
+        }
+
+    }
+
+    _viewportSizeChanged() {
+        if (this.width != window.innerWidth || this.height != window.innerHeight) {
+            this.width = window.innerWidth;
+            this.height = window.innerHeight;
+            this.onViewportResized();
+        }
     }
 }

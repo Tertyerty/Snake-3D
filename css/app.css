@@ -3,6 +3,16 @@
   src: url("../fonts/8-BIT_WO.ttf");
 }
 
+@font-face {
+  font-family: 'Minecraft';
+  src: url("../fonts/Minecraft.ttf");
+}
+
+@font-face {
+  font-family: 'SMB';
+  src: url("../fonts/Super Mario World Text Box.ttf");
+}
+
 .icon-play, .icon-multiplayer, .icon-highscores, .icon-settings, .icon-close {
   width: inherit;
   height: inherit;
@@ -351,7 +361,8 @@
 
 .modal-large .modal-content .close {
   display: inline-block;
-  float: right;
+  position: relative;
+  left: 45%;
   margin: 0 16px 0 0;
   width: 25px;
   height: 25px;

@@ -5,31 +5,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 
-    <style>
-        body{
-            margin: 0px;
-            padding: 0px;
-            overflow: hidden;
-        }
-
-        #canvas-section{
-            background: radial-gradient(#4876a8, #080d12);
-        }
-    </style>
+    <link rel="stylesheet" href="../css/game.css">
 </head>
 <body>
+
+    <a id="btnSettings" href="#" class="small-button-blue icon">
+        <div class="icon icon-settings"></div>
+    </a>
 
     <div id="canvas-section"></div>
     <img src="" alt="" srcset="">
 
-    <script src="js/libs/jquery.js"></script>
-    <script src="js/libs/three.js"></script>
-    <script src="js/game/keyboard.js"></script>    
-    <script src="js/game/inputMapping.js"></script>
-    <script src="js/game/grid.js"></script>
-    <script src="js/game/viewport.js"></script>
-    <script src="js/game/snake.js"></script>
-    <script src="js/game/snakeGame.js"></script>
-    <script src="js/pages/game.js"></script>
+
+    <div id="modalSettings" class="modal modal-large">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+                <div class="content-header">
+                    <a href="#" class="close icon-close"></a>
+                    <h2>SETTINGS</h2>
+                </div>
+                <div class="modal-body">
+                    <settings class="toggles">
+                        <h1>SOUND:</h1>
+                        <div class="wrapper">
+                            <span>MUSIC:</span> <div id="settingMusic" class="toggle-control"></div>
+                            <span>SOUND EFFECTS:</span> <div id="settingSoundEffects" class="toggle-control"></div>
+                        </div>
+                    </settings>
+                    <settings class="controls">
+                        <h1>CONTROLS:</h1>
+                        <div class="wrapper">
+                            <div class="player-controls">
+                                <h1>PLAYER 1</h1>
+                                <ul>
+                                    <li>LEFT: A</li>
+                                    <li>RIGHT: D</li>
+                                    <li>JUMP: SPACE</li>
+                                </ul>
+                            </div>
+                            <div class="player-controls">
+                                <h1>PLAYER 2</h1>
+                                <ul>
+                                    <li>LEFT: LEFT ARROW</li>
+                                    <li>RIGHT: RIGHT ARROW</li>
+                                    <li>JUMP: NUMPAD 0</li>
+                                </ul>
+                            </div>
+                            <div class="player-controls">
+                                <h1>PLAYER 3</h1>
+                                <ul>
+                                    <li>LEFT: </li>
+                                    <li>RIGHT: </li>
+                                    <li>JUMP: </li>
+                                </ul>
+                            </div>
+                            <div class="player-controls">
+                                <h1>PLAYER 4</h1>
+                                <ul>
+                                    <li>LEFT: </li>
+                                    <li>RIGHT: </li>
+                                    <li>JUMP: </li>
+                                </ul>
+                            </div>
+                            
+                        </div>
+                    </settings>
+                </div>
+                <div class="modal-footer">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>        
+            </div>
+        </div>
+
+    <script src="../js/libs/jquery.js"></script>
+    <script src="../js/libs/three.js"></script>
+    <script src="../js/game/keyboard.js"></script>    
+    <script src="../js/game/inputMapping.js"></script>
+    <script src="../js/game/grid.js"></script>
+    <script src="../js/game/viewport.js"></script>
+    <script src="../js/game/snake.js"></script>
+    <script src="../js/game/snakeGame.js"></script>
+    <script src="../js/pages/game.js"></script>
 </body>
 </html>

@@ -13,8 +13,9 @@
         <div class="icon icon-settings"></div>
     </a>
 
-    <div class="wrapper">
+    <div class="main-wrapper">
         <div class="page-bg"></div>
+        <div id="gameContainer"></div>
         <div class="panel-container">
             <div class="panel-ribbon">
                 <div class="top-border">
@@ -69,7 +70,7 @@
         </div>
     </div>
 
-    <div id="modalSettings" class="modal-large">
+    <div id="modalSettings" class="modal modal-large">
         
         <div class="modal-content">
             <div class="modal-header">
@@ -82,16 +83,51 @@
                 <h2>SETTINGS</h2>
             </div>
             <div class="modal-body">
-                <div>CONTROLS:
-                    <ul>
-                        <li>LEFT: A</li>
-                        <li>RIGHT: D</li>
-                        <li>JUMP: SPACE</li>
-                    </ul>
-                </div>
-                <div class="setting-container">
-                    <span>SOUND:</span> <div id="settingSound" class="toggle-control"></div>
-                </div>
+                <settings class="toggles">
+                    <h1>SOUND:</h1>
+                    <div class="wrapper">
+                        <span>MUSIC:</span> <div id="settingMusic" class="toggle-control"></div>
+                        <span>SOUND EFFECTS:</span> <div id="settingSoundEffects" class="toggle-control"></div>
+                    </div>
+                </settings>
+                <settings class="controls">
+                    <h1>CONTROLS:</h1>
+                    <div class="wrapper">
+                        <div class="player-controls">
+                            <h1>PLAYER 1</h1>
+                            <ul>
+                                <li>LEFT: A</li>
+                                <li>RIGHT: D</li>
+                                <li>JUMP: SPACE</li>
+                            </ul>
+                        </div>
+                        <div class="player-controls">
+                            <h1>PLAYER 2</h1>
+                            <ul>
+                                <li>LEFT: LEFT ARROW</li>
+                                <li>RIGHT: RIGHT ARROW</li>
+                                <li>JUMP: NUMPAD 0</li>
+                            </ul>
+                        </div>
+                        <div class="player-controls">
+                            <h1>PLAYER 3</h1>
+                            <ul>
+                                <li>LEFT: </li>
+                                <li>RIGHT: </li>
+                                <li>JUMP: </li>
+                            </ul>
+                        </div>
+                        <div class="player-controls">
+                            <h1>PLAYER 4</h1>
+                            <ul>
+                                <li>LEFT: </li>
+                                <li>RIGHT: </li>
+                                <li>JUMP: </li>
+                            </ul>
+                        </div>
+                        
+                    </div>
+                </settings>
             </div>
             <div class="modal-footer">
                 <div></div>
@@ -102,8 +138,7 @@
         
     </div>
 
-    <div id="modalHighscores" class="modal-large">
-        
+    <div id="modalHighscores" class="modal modal-large">
             <div class="modal-content">
                 <div class="modal-header">
                     <div></div>
@@ -115,7 +150,19 @@
                     <h2>HIGH SCORES</h2>
                 </div>
                 <div class="modal-body">
-                    <p></p>
+                    <h1>TOP 10</h1>
+                    <ul id="player-list">
+                        <li><span class="player-name">VAN</span><dots>........................</dots><span class="player-points">99999</span></li>
+                        <li><span class="player-name">SAS</span><dots>........................</dots><span class="player-points">54761</span></li>
+                        <li><span class="player-name">ASE</span><dots>.........................</dots><span class="player-points">4234</span></li>
+                        <li><span class="player-name">WEA</span><dots>.........................</dots><span class="player-points">6547</span></li>
+                        <li><span class="player-name">SAR</span><dots>.........................</dots><span class="player-points">5411</span></li>
+                        <li><span class="player-name">LAG</span><dots>.........................</dots><span class="player-points">5111</span></li>
+                        <li><span class="player-name">LEE</span><dots>..........................</dots><span class="player-points">555</span></li>
+                        <li><span class="player-name">VAS</span><dots>..........................</dots><span class="player-points">420</span></li>
+                        <li><span class="player-name">VAN</span><dots>..........................</dots><span class="player-points">150</span></li>
+                        <li><span class="player-name">REM</span><dots>...........................</dots><span class="player-points">30</span></li>
+                    </ul>
                 </div>
                 <div class="modal-footer">
                     <div></div>
@@ -125,6 +172,7 @@
             </div>
             
         </div>
+
 
     <script src="../js/libs/jquery.js"></script>
     <script src="../js/pages/index.js"></script>
