@@ -1,0 +1,17 @@
+
+.toggle-control
+    display: inline-block
+    width: 30px
+    height: 20px
+
+    cursor: pointer
+
+    +image-atlas($atlas-toggle-control...)
+    
+    background-position: 0 top
+    
+    &.on
+        background-position: 0 bottom
+    
+    &:hover
+        filter: grayscale(0.3)

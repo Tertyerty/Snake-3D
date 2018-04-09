@@ -2,8 +2,11 @@
 @import '../helpers/space'
 @import '../helpers/colors'
 @import '../helpers/icons'
+@import '../helpers/atlas'
 @import '../controls/buttons'
 @import '../controls/panel'
+@import '../controls/modal'
+@import '../controls/toggle'
 
 *
     box-sizing: border-box
@@ -63,3 +66,12 @@ body
     position: absolute
     top: $space-m
     left: $space-m
+
+
+.setting-container
+    padding: $space-inset-xs
+    line-height: 0.5em
+    >span
+        vertical-align: middle
+    >div
+        vertical-align: middle

@@ -1,18 +1,4 @@
 
-
-//Image-atlases
-$atlas-button-orange: ( '../img/atlas/button-orange-left.png' 1 3, '../img/atlas/button-orange-center.png' 1 3, '../img/atlas/button-orange-right.png' 1 3)
-
-$atlas-button-green: ( '../img/atlas/button-green-left.png' 1 3, '../img/atlas/button-green-center.png' 1 3, '../img/atlas/button-green-right.png' 1 3)
-
-$atlas-small-button-blue: '../img/atlas/button-blue-small.png' 1 3
-
-// Mixins
-=image-atlas($image, $rows, $cols)
-    background-image: url('#{$image}')
-    background-repeat: no-repeat
-    background-size: $rows * 100% $cols * 100%
-
 =button-size-ratio($width)
     width: $width
     height: $width / 3.33333

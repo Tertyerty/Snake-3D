@@ -1,34 +1,15 @@
 
-$panel-top-image: (url('../img/components/panel-top-left.png'), url('../img/components/panel-top-center.png'), url('../img/components/panel-top-right.png'))
-
-$panel-bottom-image: (url('../img/components/panel-bottom-left.png'), url('../img/components/panel-bottom-center.png'), url('../img/components/panel-bottom-right.png'))
-
-$ribbon-blue: (url('../img/components/ribbon-blue-left.png'), url('../img/components/ribbon-blue-center.png'), url('../img/components/ribbon-blue-right.png'))
 
 
 =full-bg-image($url)
     background-image: $url
     background-size: 100% 100%
 
-=three-part-image($multipart-image, $template-columns)
-    display: grid
-    grid-template-columns: $template-columns
-    div:nth-child(1)
-        @extend %full-size
-        +full-bg-image(nth($multipart-image, 1))
-    div:nth-child(2)
-        @extend %full-size
-        +full-bg-image(nth($multipart-image, 2))
-    div:nth-child(3)
-        @extend %full-size
-        +full-bg-image(nth($multipart-image, 3))
 
 %full-size
     width: 100%
     height: 100%
 
-
-    
 .panel-ribbon
     display: grid
     //width: 100%
@@ -73,7 +54,7 @@ $ribbon-blue: (url('../img/components/ribbon-blue-left.png'), url('../img/compon
         padding: $space-inset-squish-m
         grid-area: content
         text-align: center
-        background-color: $color-panel-content
+        background-color: $panel-light
 
     .footer
         grid-area: footer

@@ -1,0 +1,69 @@
+
+.modal-large
+    display: none
+    position: fixed
+    z-index: 1
+    left: 0
+    top: 0
+    width: 100vw
+    height: 100vh
+    //overflow: auto
+    background-color: rgba(0, 0, 0, 0.4)
+
+    &.show
+        display: grid
+        grid-template-columns: 1fr
+        grid-template-rows: 1fr
+        justify-content: center
+        align-content: center
+
+    .modal-content
+        display: block
+        background-color: rgba(0, 0, 0, 0.0)
+        margin: 15% auto
+        max-width: 70%
+        min-width: 50%
+    
+        .modal-header
+            width: 100%
+            height: 25px
+            +three-part-image($panel-top-image, 2% 96% 2%)
+
+        .modal-footer
+            width: 100%
+            height: 25px
+            +three-part-image($panel-bottom-image, 2% 96% 2%)
+
+
+        .content-header
+            text-align: center
+            font-family: '8BITWO'
+            padding: $space-inset-squish-m
+            background-color:  $panel-light
+            color: $dark
+
+        .modal-body
+            max-height: 400px
+            overflow: auto
+            font-family: '8BITWO'
+            padding: $space-inset-squish-l
+            background-color: $panel-light
+
+        .content-footer
+            padding: $space-inset-squish-m
+            background-color:  $panel-light
+            color: $light
+
+        .close
+            display: inline-block
+            float: right
+            margin: $space-inline-m
+            width: 25px
+            height: 25px
+            font-size: 28px
+            font-weight: bold
+
+            &::hover, &::focus
+                color: black
+                text-decoration: none
+                font-weight: bold

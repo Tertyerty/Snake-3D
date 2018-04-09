@@ -3,7 +3,7 @@
   src: url("../fonts/8-BIT_WO.ttf");
 }
 
-.icon-play, .icon-multiplayer, .icon-highscores, .icon-settings {
+.icon-play, .icon-multiplayer, .icon-highscores, .icon-settings, .icon-close {
   width: inherit;
   height: inherit;
   background-size: 100% 100%;
@@ -23,6 +23,10 @@
 
 .icon-settings {
   background-image: url("../img/icons/icon-settings.png");
+}
+
+.icon-close {
+  background-image: url("../img/icons/icon-button-close.png");
 }
 
 .wide-button-orange, .wide-button-green {
@@ -162,7 +166,7 @@
   height: 50%;
 }
 
-.panel-ribbon::before, .panel-ribbon::after, .panel-ribbon .top-border div:nth-child(1), .panel-ribbon .top-border div:nth-child(2), .panel-ribbon .top-border div:nth-child(3), .panel-ribbon .footer div:nth-child(1), .panel-ribbon .footer div:nth-child(2), .panel-ribbon .footer div:nth-child(3) {
+.panel-ribbon::before, .panel-ribbon::after, .panel-ribbon .top-border div:nth-child(1), .panel-ribbon .top-border div:nth-child(2), .panel-ribbon .top-border div:nth-child(3), .panel-ribbon .footer div:nth-child(1), .panel-ribbon .footer div:nth-child(2), .panel-ribbon .footer div:nth-child(3), .modal-large .modal-content .modal-header div:nth-child(1), .modal-large .modal-content .modal-header div:nth-child(2), .modal-large .modal-content .modal-header div:nth-child(3), .modal-large .modal-content .modal-footer div:nth-child(1), .modal-large .modal-content .modal-footer div:nth-child(2), .modal-large .modal-content .modal-footer div:nth-child(3) {
   width: 100%;
   height: 100%;
 }
@@ -252,6 +256,134 @@
   background-size: 100% 100%;
 }
 
+.modal-large {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-large.show {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  justify-content: center;
+  align-content: center;
+}
+
+.modal-large .modal-content {
+  display: block;
+  background-color: transparent;
+  margin: 15% auto;
+  max-width: 70%;
+  min-width: 50%;
+}
+
+.modal-large .modal-content .modal-header {
+  width: 100%;
+  height: 25px;
+  display: grid;
+  grid-template-columns: 2% 96% 2%;
+}
+
+.modal-large .modal-content .modal-header div:nth-child(1) {
+  background-image: url("../img/components/panel-top-left.png");
+  background-size: 100% 100%;
+}
+
+.modal-large .modal-content .modal-header div:nth-child(2) {
+  background-image: url("../img/components/panel-top-center.png");
+  background-size: 100% 100%;
+}
+
+.modal-large .modal-content .modal-header div:nth-child(3) {
+  background-image: url("../img/components/panel-top-right.png");
+  background-size: 100% 100%;
+}
+
+.modal-large .modal-content .modal-footer {
+  width: 100%;
+  height: 25px;
+  display: grid;
+  grid-template-columns: 2% 96% 2%;
+}
+
+.modal-large .modal-content .modal-footer div:nth-child(1) {
+  background-image: url("../img/components/panel-bottom-left.png");
+  background-size: 100% 100%;
+}
+
+.modal-large .modal-content .modal-footer div:nth-child(2) {
+  background-image: url("../img/components/panel-bottom-center.png");
+  background-size: 100% 100%;
+}
+
+.modal-large .modal-content .modal-footer div:nth-child(3) {
+  background-image: url("../img/components/panel-bottom-right.png");
+  background-size: 100% 100%;
+}
+
+.modal-large .modal-content .content-header {
+  text-align: center;
+  font-family: '8BITWO';
+  padding: 8px 16px 8px 16px;
+  background-color: #e4f7f7;
+  color: #242424;
+}
+
+.modal-large .modal-content .modal-body {
+  max-height: 400px;
+  overflow: auto;
+  font-family: '8BITWO';
+  padding: 16px 32px 16px 32px;
+  background-color: #e4f7f7;
+}
+
+.modal-large .modal-content .content-footer {
+  padding: 8px 16px 8px 16px;
+  background-color: #e4f7f7;
+  color: #fff;
+}
+
+.modal-large .modal-content .close {
+  display: inline-block;
+  float: right;
+  margin: 0 16px 0 0;
+  width: 25px;
+  height: 25px;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.modal-large .modal-content .close::hover, .modal-large .modal-content .close::focus {
+  color: black;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.toggle-control {
+  display: inline-block;
+  width: 30px;
+  height: 20px;
+  cursor: pointer;
+  background-image: url("../img/atlas/toggle-control.png");
+  background-repeat: no-repeat;
+  background-size: 100% 200%;
+  background-position: 0 top;
+}
+
+.toggle-control.on {
+  background-position: 0 bottom;
+}
+
+.toggle-control:hover {
+  filter: grayscale(0.3);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -306,5 +438,18 @@ body {
   position: absolute;
   top: 16px;
   left: 16px;
+}
+
+.setting-container {
+  padding: 4px 4px 4px 4px;
+  line-height: 0.5em;
+}
+
+.setting-container > span {
+  vertical-align: middle;
+}
+
+.setting-container > div {
+  vertical-align: middle;
 }
 /*# sourceMappingURL=main.css.map */
