@@ -49,25 +49,42 @@ class SnakeGame{
         this.onGameUnpauseCallback = (self) => { console.log('Game unpaused!'); };
         this.onGameEndCallback = (self, playerId) => { console.log(`Game ended player ${playerId} won!`); };
 
-        this.loader = new THREE.OBJLoader();
-        this.loader.load(
-            '../assets/test.obj',
-            function (object) {
-                console.log(self.grid.center());
+        this.models = ['buho', 'gallinita', 'gallina2', 'gallina3', 'pato', 'manzana'];
+
+        this.objIndex = 0;
+        for (let model of this.models) {
+            let obj = model + '.obj';
+            let mtl = model + '.mtl';
+            this.loadOBJWithMTL('../assets/', obj, mtl, (object) => {
                 object.position.copy(self.grid.center());
-                object.position.x += self.grid.cellSize * 0.5;
+                object.position.x += (self.objIndex * 10 - 30) + self.grid.cellSize * 0.5;
                 object.position.z += self.grid.cellSize * 0.5;
-                //object.position.y -= self.grid.cellSize;
-                //object.scale.set(0.5, 0.5, 0.5);
+                object.scale.set(0.2, 0.2, 0.2);
                 self.scene.add(object);
-            },
-            function (xhr) {
-                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-            },
-            function (error) {
-                console.warn(error);
-            }
-        );
+                self.objIndex++;
+            });
+        }
+
+        this.loadOBJWithMTL('../assets/', 'jardin1.obj', 'jardin1.mtl', (object) => {
+            console.log(self.grid.center());
+            object.position.copy(self.grid.center());
+            object.position.x += self.grid.cellSize * 0.5;
+            object.position.z += self.grid.cellSize * 0.5;
+            object.position.y -= 31;
+            self.scene.add(object);
+        });
+
+    }
+
+    loadOBJWithMTL(path, objFile, mtlFile, onLoadCallback) {
+        let mtlLoader = new THREE.MTLLoader();
+        mtlLoader.setPath(path);
+        mtlLoader.load(mtlFile, (materials) => {
+            let objLoader = new THREE.OBJLoader();
+            objLoader.setPath(path);
+            objLoader.setMaterials(materials);
+            objLoader.load(objFile, (object) => { onLoadCallback(object) });
+        });
 
     }
 
@@ -87,13 +104,15 @@ class SnakeGame{
     start(){
         this.lights = [
             new THREE.AmbientLight(0xffffff, 0.2),
-            new THREE.DirectionalLight(0xff0000, 1.0),
-            new THREE.DirectionalLight(0x00ff00, 1.0),
-            new THREE.DirectionalLight(0x0000ff, 1.0),
+            new THREE.DirectionalLight(0xffffff, 1.0),
+            //new THREE.DirectionalLight(0xff0000, 1.0),
+            //new THREE.DirectionalLight(0x00ff00, 1.0),
+            //new THREE.DirectionalLight(0x0000ff, 1.0),
         ];
-        this.lights[1].position.set(1, 0, 0)
-        this.lights[2].position.set(0, 1, 0)
-        this.lights[3].position.set(0, 0, 1)
+        this.lights[1].position.set(1, 0.8, 0.5);
+        //this.lights[1].position.set(1, 0, 0)
+        //this.lights[2].position.set(0, 1, 0)
+        //this.lights[3].position.set(0, 0, 1)
 
         let playerGeometry = new THREE.BoxGeometry(1, 1, 1);
         let playerMaterial = new THREE.MeshLambertMaterial({ color: new THREE.Color(0xffffff) });
