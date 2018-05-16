@@ -1,6 +1,8 @@
 class SnakeGame{
     constructor(players){
 
+        
+
         this.viewport = new Viewport(window.innerWidth, window.innerHeight, 'ORTHO', 40);
 
         this.renderer = new THREE.WebGLRenderer( {alpha: true} );
@@ -8,6 +10,8 @@ class SnakeGame{
         this.renderer.setSize(this.viewport.width, this.viewport.height);
 
         this.scene = new THREE.Scene();
+
+        let self = this;
 
         this.camera;
         if(this.viewport.mode == 'PERSPECTIVE') {
@@ -44,6 +48,26 @@ class SnakeGame{
         this.onGamePauseCallback = (self) => { console.log('Game paused!'); };
         this.onGameUnpauseCallback = (self) => { console.log('Game unpaused!'); };
         this.onGameEndCallback = (self, playerId) => { console.log(`Game ended player ${playerId} won!`); };
+
+        this.loader = new THREE.OBJLoader();
+        this.loader.load(
+            '../assets/test.obj',
+            function (object) {
+                console.log(self.grid.center());
+                object.position.copy(self.grid.center());
+                object.position.x += self.grid.cellSize * 0.5;
+                object.position.z += self.grid.cellSize * 0.5;
+                //object.position.y -= self.grid.cellSize;
+                //object.scale.set(0.5, 0.5, 0.5);
+                self.scene.add(object);
+            },
+            function (xhr) {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            },
+            function (error) {
+                console.warn(error);
+            }
+        );
 
     }
 

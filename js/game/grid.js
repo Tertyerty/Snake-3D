@@ -19,9 +19,26 @@ class Grid{
         return result;
     }
 
+    center(){
+        let result = this.position.clone();
+        let half_gridSize = this.gridSize * 0.5;
+        result.x = Math.floor(half_gridSize / this.cellSize);
+        result.y = 0;
+        result.z = Math.floor(half_gridSize / this.cellSize);
+        return result;
+    }
+
+    gridToWorld(x, y, z){
+        let result = this.position.clone();
+        result.x = x * this.cellSize;
+        result.y = y * this.cellSize;
+        result.z = z * this.cellSize;
+        return result;
+    }
+
     worldToGrid(position) {
         let result = position.clone();
-        let gridSize = this.gridSize;
+        
         result.x = Math.floor(result.x / this.cellSize);
         result.y = Math.floor(result.y / this.cellSize);
         result.z = Math.floor(result.z / this.cellSize);
