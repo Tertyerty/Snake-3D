@@ -1,8 +1,5 @@
 class SnakeGame{
     constructor(players){
-
-        
-
         this.viewport = new Viewport(window.innerWidth, window.innerHeight, 'ORTHO', 40);
 
         this.renderer = new THREE.WebGLRenderer( {alpha: true} );
@@ -26,7 +23,6 @@ class SnakeGame{
             this.updateCamera()
         });
 
-            
         this.lights = [];
 
         this.grid = new Grid(1, 31);
@@ -35,7 +31,7 @@ class SnakeGame{
         this.camera.position.add(new THREE.Vector3(20, 20, 20));
         this.camera.lookAt(this.grid.gridHelper.position);
         
-        this.keyboard = new Keyboard();        
+        this.keyboard = new Keyboard();
         this.amountPlayers = players;
         this.players = [];
         this.playerControllers = [];
@@ -44,51 +40,54 @@ class SnakeGame{
         this.clock = new THREE.Clock();
         this.paused = false;
         
-
         this.onGamePauseCallback = (self) => { console.log('Game paused!'); };
         this.onGameUnpauseCallback = (self) => { console.log('Game unpaused!'); };
         this.onGameEndCallback = (self, playerId) => { console.log(`Game ended player ${playerId} won!`); };
 
-        this.models = ['buho', 'gallinita', 'gallina2', 'gallina3', 'pato', 'manzana'];
+        
+        this.composer = new THREE.EffectComposer( this.renderer );
+        this.composer.addPass( new THREE.RenderPass( this.scene, this.camera ) );
 
-        this.objIndex = 0;
-        for (let model of this.models) {
-            let obj = model + '.obj';
-            let mtl = model + '.mtl';
-            this.loadOBJWithMTL('../assets/', obj, mtl, (object) => {
-                object.position.copy(self.grid.center());
-                object.position.x += (self.objIndex * 10 - 30) + self.grid.cellSize * 0.5;
-                object.position.z += self.grid.cellSize * 0.5;
-                object.scale.set(0.2, 0.2, 0.2);
-                self.scene.add(object);
-                self.objIndex++;
-            });
-        }
+        // you might want to use a gaussian blur filter before
+        // the next pass to improve the result of the Sobel operator
+        // Sobel operator
 
-        this.loadOBJWithMTL('../assets/', 'jardin1.obj', 'jardin1.mtl', (object) => {
-            console.log(self.grid.center());
-            object.position.copy(self.grid.center());
-            object.position.x += self.grid.cellSize * 0.5;
-            object.position.z += self.grid.cellSize * 0.5;
-            object.position.y -= 31;
-            self.scene.add(object);
-        });
+        this.glitchPass = new THREE.GlitchPass();
+        this.glitchPass.renderToScreen = true;
+        //this.glitchPass.goWild = true;
+        this.composer.addPass( this.glitchPass );
+        this.useComposer = false;
+        this.composerTimer = 0;
+    } 
 
-    }
-
-    loadOBJWithMTL(path, objFile, mtlFile, onLoadCallback) {
+    loadOBJWithMTL(path, objFile, mtlFile, onLoadCallback, extraData) {
         let mtlLoader = new THREE.MTLLoader();
         mtlLoader.setPath(path);
         mtlLoader.load(mtlFile, (materials) => {
             let objLoader = new THREE.OBJLoader();
             objLoader.setPath(path);
             objLoader.setMaterials(materials);
-            objLoader.load(objFile, (object) => { onLoadCallback(object) });
+            objLoader.load(objFile, (object) => { onLoadCallback(object, extraData) });
         });
-
     }
 
-    run(){
+    allObjectsLoaded(){
+        for(let prop in this.models){
+            let model = this.models[prop];
+            if(Array.isArray(model)){
+                for(let obj of model){
+                    if(!obj.mesh) return false;
+                }
+            }
+            else{
+                if(!model.mesh) return false;
+            }
+        }
+        return true;
+    }
+
+    run() {
+        
         this.start();
         this._animationLoop(this.gameLoop);
     }
@@ -102,6 +101,31 @@ class SnakeGame{
     }
 
     start(){
+        let self = this;
+        this.models = {
+            players: 
+            [
+                new AsyncMesh('../assets/', 'gallina2', true),
+                new AsyncMesh('../assets/', 'buho', true),
+                new AsyncMesh('../assets/', 'pato', true),
+                new AsyncMesh('../assets/', 'gallinita', true),
+                new AsyncMesh('../assets/', 'gallina3', true),
+            ],
+            manzana: new AsyncMesh('../assets/', 'manzana', true),
+            jardin1: new AsyncMesh('../assets/', 'jardin1', true),
+        };
+
+        this.models.jardin1.subscribe(this, '_addBackground');
+
+        this._addBackground = function(asyncMesh) {
+            let object = asyncMesh.getClone();
+            object.position.copy(self.grid.center());
+            object.position.x += self.grid.cellSize * 0.5;
+            object.position.z += self.grid.cellSize * 0.5;
+            object.position.y -= 31;
+            self.scene.add(object);
+        }
+
         this.lights = [
             new THREE.AmbientLight(0xffffff, 0.2),
             new THREE.DirectionalLight(0xffffff, 1.0),
@@ -118,15 +142,24 @@ class SnakeGame{
         let playerMaterial = new THREE.MeshLambertMaterial({ color: new THREE.Color(0xffffff) });
         let playerMesh = new THREE.Mesh(playerGeometry, playerMaterial);
 
+        let playerColors = [
+            new THREE.Color(0xffffff),
+            new THREE.Color(0x8e7865),
+            new THREE.Color(0xb6c16e),
+            new THREE.Color(0xffffff),
+        ];
+
         for(let i = 0; i < this.amountPlayers; i++){
             this.players.push(new Snake(this.scene, this.grid, {
-                playerId: i,
+                playerId: i,    
                 position: this.grid.randomPosition(),
                 length: 4,
                 tick: 0.1,
                 //geometry: playerGeometry,
                 //material: playerMaterial,
-                mesh: playerMesh.clone(),
+                headMesh: this.models.players[i],
+                //bodyMesh: playerMesh.clone(),
+                bodyColor: playerColors[i],
             }));
         }
 
@@ -145,15 +178,18 @@ class SnakeGame{
             'Jump': 'numpad 0'
         }));
 
-        let sphereGeo = new THREE.SphereGeometry(0.5, 4, 2);
+        /*let sphereGeo = new THREE.SphereGeometry(0.5, 4, 2);
         let sphereMaterial = new THREE.MeshPhongMaterial({
             color: new THREE.Color(0xFFFFFF)
-        });
+        });*/
         for(let i = 0; i < this.players.length; i++){
-            let f = new THREE.Mesh(sphereGeo, sphereMaterial)
-            f.position.copy(this.grid.randomPosition());
+            //let f = new THREE.Mesh(sphereGeo, sphereMaterial)
+            //f.position.copy(this.grid.randomPosition());
+            //this.food.push(f);
+            //this.scene.add(f);
+            let position = this.grid.randomPosition();
+            let f = new Food(this.scene, this.models.manzana, position);
             this.food.push(f);
-            this.scene.add(f);
         }
 
         for (let light of this.lights) {
@@ -162,8 +198,8 @@ class SnakeGame{
 
         
 
-        let axesHelper = new THREE.AxesHelper(5);
-        this.scene.add(axesHelper);
+        /*let axesHelper = new THREE.AxesHelper(5);
+        this.scene.add(axesHelper);*/
         this.scene.add(this.grid.gridHelper);
     }
 
@@ -184,22 +220,35 @@ class SnakeGame{
     }
     
     update( time ){
+        if(this.composerTimer >= 2){
+            this.useComposer = false;
+        }else{
+            this.composerTimer += time.deltaTime;
+        }
+
+        for(let f of this.food){
+            f.update( time );
+        }
+
         for (let player of this.players) {
 
             for (let f of this.food){
-                f.position.y = Math.sin(time.elapsed * 5) * 0.2 + 0.5;
-                f.rotation.y += time.deltaTime;
-
                 let foodInGrid = this.grid.worldToGrid(f.position);
                 if (player.eat(foodInGrid)) {
+                    let score = f.points + ((Math.random() - 0.5) * 2) * 5;
+                    score = Math.floor(score);
+                    player.addScore( score );
+                    f.gotEaten();
                     f.position.copy(this.grid.randomPosition());
+
                 }
             }
-
             
             player.update(time);
             for(let second of this.players){
                 if(player.intersects(second)){
+                    this.useComposer = true;
+                    this.composerTimer = 0;
                     player.alive = false;
                     console.log(player.playerId);
                 }
@@ -209,8 +258,13 @@ class SnakeGame{
     }
 
 
-    render(){
-        this.renderer.render(this.scene, this.camera);
+    render() {
+        if(!this.useComposer){
+            this.renderer.render(this.scene, this.camera);
+        }
+        else
+            this.composer.render();
+
     }
 
     updateCamera() {

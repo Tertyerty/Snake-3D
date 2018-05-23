@@ -3,12 +3,25 @@ class Snake{
     constructor(scene, grid, args){
         if(!args) args = {};
         
+        this.bodyColor = args['bodyColor'] || new THREE.Color(0xffffff);
         this.geometry = args['geometry'] || new THREE.BoxGeometry(1,1,1);
-        this.material = args['material'] || new THREE.MeshLambertMaterial({color: new THREE.Color(0xffffff)});
-        this.mesh = args['mesh'] || new THREE.Mesh(this.geometry, this.material);
+        this.material = args['material'] || new THREE.MeshLambertMaterial({color: this.bodyColor});
+        this.defaultMesh = args['defaultMesh'] || new THREE.Mesh(this.geometry, this.material);
+        let headMeshAsync = args['headMesh'];
+        this.mesh = this.defaultMesh.clone();
+        this.bodymesh = this.defaultMesh.clone();
+        
         let pos = args['position'] || new THREE.Vector3(0, 0, 0);
         this.mesh.position.copy(pos);
+        
+        if(headMeshAsync) {
+            if(headMeshAsync instanceof AsyncMesh) {
+                headMeshAsync.subscribe(this, '_onMeshLoad');
+            }
+        }
+
         this.grid = grid;
+     
         this.scene = scene;
         this.scene.add(this.mesh);
         
@@ -28,6 +41,18 @@ class Snake{
         this.isAlive = true;
         this.jumping = false;
         this.onAirCount = 0;
+        this.score = 0;
+    }
+
+    _onMeshLoad(asyncMesh) {
+        this.scene.remove(this.mesh);
+        let newMesh = asyncMesh.getClone();
+        newMesh.scale.set(0.2, 0.2, 0.2);
+        newMesh.position.copy(this.mesh.position);
+        newMesh.rotation.copy(this.mesh.rotation);
+        this.mesh = newMesh;
+        this.position = this.mesh.position;
+        this.scene.add(this.mesh);
     }
 
     input(input){
@@ -57,6 +82,7 @@ class Snake{
     update(time){
         this.elapsed += time.deltaTime;
         if(this.elapsed >= this.tick){
+            this.addScore( Math.ceil(Math.random() * 2) );
             this.elapsed = 0;
             let scaleRange = {
                 max: 0.9,
@@ -101,17 +127,22 @@ class Snake{
         }
     }
 
+    addScore(points){
+        this.score += points;
+    }
+
     eat(food){
         let gridPosition = this.grid.worldToGrid(this.position);
         let distance = gridPosition.distanceTo(food);
-        if(distance == 0){
+        if(distance == 0) {
             this.grow();
         }
         return distance == 0;
     }
 
     grow(){
-        let body = this.mesh.clone();
+        let body = this.bodymesh.clone();
+        body.position.copy(this.mesh.position);
         body.isNew = true;
         this.scene.add(body);
         this.history.push(body);
@@ -145,6 +176,7 @@ class Snake{
     rotateDir(angle){
         let axis = new THREE.Vector3(0, 1, 0);
         this.velocity.applyAxisAngle(axis, THREE.Math.degToRad(angle));
+        this.mesh.rotation.y += THREE.Math.degToRad(angle);
     }
 
     get alive(){
